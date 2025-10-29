@@ -8,7 +8,7 @@ Has encontrado esta página secreta. ¡Felicidades!
 
 Ahora debes demostrar tu ingenio:
 
-1. Abre el archivo `pista.html`.
+1. Descarga el archivo `pista.html` y ejecutalo.
 2. Resuelve el rompecabezas interactivo.
 3. Obtén la contraseña secreta.
 4. Usa la contraseña para desbloquear el archivo `recompensa.zip`.
