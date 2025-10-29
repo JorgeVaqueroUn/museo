@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Sopa de letras — Coordenadas secretas</title>
+  <style>
+    :root {
+      --fondo: #ffffff;
+      --panel: #f8fafc;
+      --tinta: #1e293b;
+      --muted: #64748b;
+      --acento: #0ea5e9;
+      --rejilla: #e2e8f0;
+      --celda: #ffffff;
+      --celda-ok: #ecfdf5;
+      --celda-ok-texto: #065f46;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: #ffffff;
+      color: var(--tinta);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .marco {
+      width: min(980px, 96vw);
+      display: grid;
+      gap: 16px;
+    }
+    header, section, footer {
+      background: var(--panel);
+      border: 1px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    h1 {
+      font-size: clamp(1.05rem, 2.3vw, 1.5rem);
+      margin: 0;
+      color: #1e40af;
+    }
+    .controles {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      background: linear-gradient(180deg, #3b82f6, #2563eb);
+      color: #fff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      cursor: pointer;
+      border: 1px solid #1d4ed8;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+      transform: translateY(-1px);
+    }
+    button.secundario {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+    button.secundario:hover {
+      background: #cbd5e1;
+    }
+    .juego {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+    }
+    @media (max-width: 860px) {
+      .juego { grid-template-columns: 1fr; }
+    }
+    .rejilla {
+      display: grid;
+      gap: 6px;
+      background: var(--rejilla);
+      padding: 12px;
+      border-radius: 14px;
+      width: min(600px, 96vw);
+      margin-inline: auto;
+      touch-action: none;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    .celda {
+      aspect-ratio: 1/1;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: clamp(1.05rem, 4.6vw, 1.5rem);
+      background: var(--celda);
+      color: #1f2937;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.15s;
+    }
+    .celda.sel {
+      outline: 3px solid var(--acento);
+      background: #dbeafe;
+    }
+    .celda.ok {
+      background: var(--celda-ok);
+      color: var(--celda-ok-texto);
+      border-color: #86efac;
+    }
+    .lista {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .lista h3 {
+      margin: 4px 0 8px 0;
+      color: #1e40af;
+      font-size: 1.1rem;
+    }
+    .lista ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px 12px;
+    }
+    .lista li {
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .lista li.ok {
+      color: #166534;
+      text-decoration: line-through;
+      font-weight: 600;
+    }
+    .pista {
+      color: var(--muted);
+      font-size: .98rem;
+      text-align: center;
+      margin: 12px 0 0;
+    }
+    .capa {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+    .capa.mostrar {
+      display: flex;
+    }
+    .tarjeta {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 24px;
+      width: min(560px, 96vw);
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .coords {
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+      font-size: clamp(1.1rem, 3.8vw, 1.6rem);
+      color: #166534;
+      background: #f0fdf4;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      margin: 12px 0;
+    }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="marco">
+    <header>
+      <h1>Sopa de letras — Encuentra todas las palabras</h1>
+      <div class="controles">
+        <button id="btnNueva">Nueva sopa</button>
+      </div>
+    </header>
+    <section>
+      <div class="juego">
+        <div>
+          <div id="rejilla" class="rejilla" aria-label="Sopa de letras" role="application"></div>
+          <p class="pista">Arrastra en línea recta (horizontal, vertical o diagonal). La selección se corrige automáticamente a la dirección más cercana.</p>
+        </div>
+        <aside class="lista">
+          <h3>Palabras a encontrar</h3>
+          <ul id="listaPalabras"></ul>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div class="capa" id="capa" role="dialog" aria-modal="true">
+    <div class="tarjeta">
+      <h2>¡Sopa completada!</h2>
+      <p>El arte se plasma de muchas maneras. Aunque el edificio sea antiguo, siempre hay formas de expresarlo. Abre Street View y observa su fachada: lo que parece ruina es lienzo, y el grafiti es la obra que guarda la clave.</p>
+      <p>Coordenadas:</p>
+      <p class="coords mono">39.468170970479115, -6.375310322603433</p>
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button id="btnCopiar">Copiar</button>
+        <button class="secundario" id="btnCerrar">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const COORDENADAS='39.468170970479115, -6.375310322603433'
+    const TAM=14
+    const PALABRAS=['COORDENADAS','LATITUD','LONGITUD','GPS','MAPA','BRUJULA','NORTE','SUR','ESTE','OESTE','RUMBO','TRAZA','RADIAL','UBICACION','RUTA']
+    const elRejilla=document.getElementById('rejilla')
+    const elLista=document.getElementById('listaPalabras')
+    const elCapa=document.getElementById('capa')
+    const btnNueva=document.getElementById('btnNueva')
+    const btnCerrar=document.getElementById('btnCerrar')
+    const btnCopiar=document.getElementById('btnCopiar')
+    let matriz=[]
+    let colocadas=[]
+    let encontradas=new Set()
+    const DIR=[[0,1],[1,0],[0,-1],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]
+    const id=(f,c)=>f*TAM+c
+    const dentro=(f,c)=>f>=0&&c>=0&&f<TAM&&c<TAM
+    function nuevaMatriz(){matriz=Array.from({length:TAM},()=>Array(TAM).fill(''))}
+    function dirAleatoria(){return DIR[Math.floor(Math.random()*DIR.length)]}
+    function cabe(p,f,c,df,dc){for(let i=0;i<p.length;i++){const ff=f+i*df,cc=c+i*dc;if(!dentro(ff,cc))return false;const ch=matriz[ff][cc];if(ch!==''&&ch!==p[i])return false}return true}
+    function colocar(p){for(let t=0;t<300;t++){const [df,dc]=dirAleatoria();const f=Math.floor(Math.random()*TAM);const c=Math.floor(Math.random()*TAM);if(cabe(p,f,c,df,dc)){const celdas=[];for(let i=0;i<p.length;i++){const ff=f+i*df,cc=c+i*dc;matriz[ff][cc]=p[i];celdas.push(id(ff,cc))}colocadas.push({palabra:p,celdas});return true}}return false}
+    function rellenar(){const letras='ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';for(let f=0;f<TAM;f++)for(let c=0;c<TAM;c++)if(matriz[f][c]===''){matriz[f][c]=letras[Math.floor(Math.random()*letras.length)]}}
+    function construirLista(){elLista.innerHTML='';PALABRAS.forEach(p=>{const li=document.createElement('li');li.textContent=p;li.id='p_'+p;elLista.appendChild(li)})}
+    function dibujar(){elRejilla.style.gridTemplateColumns=`repeat(${TAM},1fr)`;elRejilla.innerHTML='';for(let f=0;f<TAM;f++){for(let c=0;c<TAM;c++){const d=document.createElement('div');d.className='celda';d.textContent=matriz[f][c];d.dataset.f=f;d.dataset.c=c;d.id='celda_'+id(f,c);elRejilla.appendChild(d)}}}
+    let arrastrando=false,inicio=null,seleccion=[]
+    function limpiarSeleccion(){seleccion.forEach(i=>document.getElementById('celda_'+i)?.classList.remove('sel'));seleccion=[]}
+    function direccionCercana(df,dc){let mejor=DIR[0],max=-Infinity;for(const [a,b] of DIR){const d=a*df+b*dc;const n=Math.hypot(a,b)||1;const val=d/n;if(val>max){max=val;mejor=[a,b]}}return mejor}
+    function lineaCorregida(f0,c0,f1,c1){const df=f1-f0,dc=c1-c0;if(df===0&&dc===0)return[id(f0,c0)];const [af,ac]=direccionCercana(df,dc);const pasos=Math.max(Math.abs(df),Math.abs(dc));const celdas=[];for(let k=0;k<=pasos;k++){const f=f0+k*af,c=c0+k*ac;if(!dentro(f,c))break;celdas.push(id(f,c))}return celdas}
+    function leer(celdas){return celdas.map(i=>{const f=Math.floor(i/TAM),c=i%TAM;return matriz[f][c]}).join('')}
+    function marcarOk(celdas){celdas.forEach(i=>document.getElementById('celda_'+i)?.classList.add('ok'))}
+    function iguales(a,b){if(a.length!==b.length)return false;for(let i=0;i<a.length;i++)if(a[i]!==b[i])return false;return true}
+    function comprobar(celdas){const palabra=leer(celdas),rev=palabra.split('').reverse().join('');let m=colocadas.find(p=>!encontradas.has(p.palabra)&&(palabra===p.palabra||rev===p.palabra)&&(iguales(celdas,p.celdas)||iguales(celdas.slice().reverse(),p.celdas)));if(m){encontradas.add(m.palabra);marcarOk(m.celdas);const li=document.getElementById('p_'+m.palabra);if(li)li.classList.add('ok');if(encontradas.size===PALABRAS.length)elCapa.classList.add('mostrar')}}
+    function celdaBajoPuntero(e){const el=document.elementFromPoint(e.clientX,e.clientY);return el&&el.classList.contains('celda')?el:null}
+    elRejilla.addEventListener('pointerdown',e=>{const cel=e.target.closest('.celda');if(!cel)return;e.preventDefault();arrastrando=true;elRejilla.setPointerCapture(e.pointerId);inicio=[+cel.dataset.f,+cel.dataset.c];limpiarSeleccion();seleccion=[id(inicio[0],inicio[1])];cel.classList.add('sel')})
+    elRejilla.addEventListener('pointermove',e=>{if(!arrastrando||!inicio)return;const cel=celdaBajoPuntero(e);if(!cel)return;const f1=+cel.dataset.f,c1=+cel.dataset.c;const f0=inicio[0],c0=inicio[1];const celdas=lineaCorregida(f0,c0,f1,c1);if(celdas.length===0)return;limpiarSeleccion();seleccion=celdas;celdas.forEach(i=>document.getElementById('celda_'+i)?.classList.add('sel'))})
+    function terminar(e){if(!arrastrando)return;arrastrando=false;elRejilla.releasePointerCapture?.(e.pointerId);if(seleccion.length>0)comprobar(seleccion);limpiarSeleccion();inicio=null}
+    elRejilla.addEventListener('pointerup',terminar)
+    elRejilla.addEventListener('pointercancel',terminar)
+    elRejilla.addEventListener('pointerleave',terminar)
+    function nueva(){colocadas=[];encontradas.clear();construirLista();nuevaMatriz();const mayus=PALABRAS.map(p=>p.toUpperCase()).sort((a,b)=>b.length-a.length);mayus.forEach(p=>colocar(p));rellenar();dibujar()}
+    btnNueva.addEventListener('click',nueva)
+    btnCerrar.addEventListener('click',()=>elCapa.classList.remove('mostrar'))
+    btnCopiar.addEventListener('click',()=>navigator.clipboard?.writeText(COORDENADAS))
+    nueva()
+  </script>
+</body>
+</html>
