@@ -12,6 +12,6 @@ Ahora debes demostrar tu ingenio:
 2. Resuelve el rompecabezas interactivo.
 3. Obtén la contraseña secreta.
 4. Obtén el archivo oculto de la ISO `oculto.iso`.
-6. Usa la contraseña para desbloquear el ejecutable `programa.py`.
+6. Usa la contraseña para desbloquear el ejecutable `programa.py` o `programa.exe`.
 7. Obten la contraseña del archivo oculto.
 8. Desencripta la obra.
