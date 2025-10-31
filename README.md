@@ -12,7 +12,8 @@ Ahora debes demostrar tu ingenio:
 2. Resuelve el rompecabezas interactivo.
 3. Obtén la contraseña secreta.
 6. Usa la contraseña para desbloquear el ejecutable `programa.py` o `programa.exe`.
-7. Obten la contraseña del archivo oculto.
+7. Obten la contraseña del archivo encriptado.
 8. Desencripta la obra.
 
-oQr_a8cU7RoKhB6zZK31wvy7xBhvbpxMX2-gB_vvBFc=
+<!-- La contraseña del archivo encriptado es: oQr_a8cU7RoKhB6zZK31wvy7xBhvbpxMX2-gB_vvBFc= -->
+
