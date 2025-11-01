@@ -40,12 +40,12 @@ def iniciar_programa_llave():
             messagebox.showerror("Error", "❌ Clave incorrecta o archivo corrupto.")
 
     ventana = tk.Tk()
-    ventana.title("🔐 Llave obtenida ISO")
+    ventana.title("🔐 Llave obtenida ENC")
     ventana.geometry("500x250")
     ventana.configure(bg="white")
 
     tk.Label(ventana, text="Desbloquea el cuadro robado", font=("Helvetica", 16, "bold"), fg="#333", bg="white").pack(pady=10)
-    tk.Label(ventana, text="Introduce la clave secreta (ISO):", font=("Helvetica", 12), fg="#333", bg="white").pack(pady=5)
+    tk.Label(ventana, text="Introduce la clave secreta (ENC):", font=("Helvetica", 12), fg="#333", bg="white").pack(pady=5)
     entrada_clave = tk.Entry(ventana, show="*", width=40, font=("Helvetica", 12))
     entrada_clave.pack(pady=5)
     tk.Button(ventana, text="🔓 Descifrar imagen", command=descifrar_imagen, font=("Helvetica", 12, "bold"), bg="#4CAF50", fg="white", padx=10, pady=5).pack(pady=20)
